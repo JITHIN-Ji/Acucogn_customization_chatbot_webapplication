@@ -5,9 +5,10 @@ import logging
 import os
 from langdetect import detect  
 import pycountry
-from typing import List, Dict
+from typing import List, Dict, Optional
 from groq import AsyncGroq
 from app.models import question_store  
+from app.core.config import settings 
 import uuid 
 
 logger = logging.getLogger(__name__)
@@ -99,7 +100,7 @@ class AgentService:
             return latest_query
 
         recent_queries = history[-5:] if len(history) > 5 else history
-        history_str = "\n".join([f"- {h['query']}" for h in reversed(recent_queries)])
+        history_str = "\n".join([f"- {h['content']}" for h in reversed(recent_queries)])
         
         logger.info(f"Rephrasing latest query '{latest_query}' with OpenAI model '{model}' using history:\n{history_str}")
         
@@ -150,14 +151,25 @@ Respond with ONLY the rewritten query OR the text "NO_REPHRASE_NEEDED".
             logger.error(f"OpenAI rephrase failed: {e}")
             return latest_query
 
-    async def handle_chat_query(self, request: ChatRequest, user_id: str) -> ChatResponse:
+    async def handle_chat_query(
+        self, 
+        query: str,
+        document_ids: List[str], # Accepts a LIST of document IDs
+        system_prompt: Optional[str],
+        user_id: str,
+        chat_history: Optional[List[Message]] = None,
+        language: str = "auto",
+        llm_provider: str = settings.DEFAULT_LLM_PROVIDER
+    ) -> ChatResponse:
         """
-        Process a chat query by orchestrating RAG steps for multilingual support.
+        Refactored chat handler that uses explicit parameters and supports multiple document IDs.
         """
-        logger.info(f"Agent handling chat query for user {user_id}: {request.query}")
-        chat_history_list = await question_store.get_recent(user_id)
-        history_str = "\n".join([f"{h['role']}: {h['query']}" for h in reversed(chat_history_list[-5:])])
+        logger.info(f"Agent handling chat query for user {user_id} across document_ids: {document_ids}")
+        
+        chat_history_list = [h.dict() for h in chat_history] if chat_history else []
+        history_str = "\n".join([f"{h['role']}: {h['content']}" for h in reversed(chat_history_list[-5:])])
 
+        # --- Intent Detection (No changes from your original code) ---
         intent_prompt = f"""Classify the user's intent based on their last message. Respond with ONLY one category:
 1.  **GREETING_OR_SMALLTALK**: For simple greetings (hi, hello), thanks, or farewells.
 2.  **DOCUMENT_QUESTION**: For any question that seems to be asking for information, assuming it should be answered from the document.
@@ -165,7 +177,7 @@ Respond with ONLY the rewritten query OR the text "NO_REPHRASE_NEEDED".
 Conversation History:
 {history_str}
 
-User's Last Message: "{request.query}"
+User's Last Message: "{query}"
 
 Category:"""
         try:
@@ -180,33 +192,29 @@ Category:"""
             logger.error(f"Intent detection failed: {e}. Defaulting to DOCUMENT_QUESTION.")
             intent = "DOCUMENT_QUESTION"
 
-        
         if "GREETING_OR_SMALLTALK" in intent:
-            # For simple chat, generate a friendly response without doing RAG.
-            response_prompt = f"You are a friendly AI assistant. The user said: '{request.query}'. Respond with a brief, friendly, and helpful greeting or acknowledgment. Keep it to one sentence."
+            response_prompt = f"You are a friendly AI assistant. The user said: '{query}'. Respond with a brief, friendly, and helpful greeting or acknowledgment. Keep it to one sentence."
             resp = await self.openai_client.client.chat.completions.create(
                 model="openai/gpt-4o-mini",
                 messages=[{"role": "system", "content": response_prompt}],
                 temperature=0.7,
             )
             answer = resp.choices[0].message.content.strip()
-            
-            await question_store.save_query(user_id, request.query, role="user")
+            await question_store.save_query(user_id, query, role="user")
             await question_store.save_query(user_id, answer, role="assistant")
             return ChatResponse(answer=answer, sources=[])
 
-
-
+        # --- Rephrasing (No changes from your original code) ---
         standalone_query = await self._rephrase_with_openai(
             history=chat_history_list,
-            latest_query=request.query,
+            latest_query=query,
         )
 
-        # Step 2: Detect the user's desired language
-        language_code = request.language or "auto"
+        # --- Language Detection (No changes from your original code) ---
+        language_code = language
         if language_code == "auto":
             try:
-                language_code = detect(request.query)
+                language_code = detect(query)
                 logger.info(f"Detected language: {language_code}")
             except Exception:
                 language_code = "en"
@@ -215,28 +223,23 @@ Category:"""
         except Exception:
             language_name = "English"
 
-    
+        # --- Source Retrieval (This now uses the document_ids filter) ---
         logger.info(f"Step 3: Retrieving sources for query: '{standalone_query}'")
         context_sources = await self.rag_pipeline.retrieve_relevant_chunks(
             query=standalone_query,
-            # document_id_filters=request.document_ids
+            document_id_filters=document_ids # This ensures we only search the correct documents
         )
+
         if not context_sources:
             logger.info("No relevant chunks found in vector store for the query.")
-            # Provide a friendly "not found" message directly.
-            final_answer = f"I'm sorry, but I couldn't find any information related to '{request.query}' in the document. Is there anything else I can help you with?"
-            
-            
-            await question_store.save_query(user_id, request.query, role="user")
+            final_answer = f"I'm sorry, but I couldn't find any information related to '{query}' in the document. Is there anything else I can help you with?"
+            await question_store.save_query(user_id, query, role="user")
             await question_store.save_query(user_id, final_answer, role="assistant")
-            
-            # Return the answer with an empty list of sources.
             return ChatResponse(answer=final_answer, sources=[])
 
-        # Step 4: Translate the context chunks if necessary
+        # --- Translation (No changes from your original code) ---
         if context_sources:
             try:
-                # This needs the import: from deep_translator import GoogleTranslator
                 from deep_translator import GoogleTranslator
                 logger.info(f"Step 4: Translating {len(context_sources)} context chunks to '{language_code}'...")
                 translator = GoogleTranslator(source='auto', target=language_code)
@@ -247,39 +250,29 @@ Category:"""
             except Exception as e:
                 logger.error(f"Failed to translate context chunks, proceeding with original text. Error: {e}")
 
-        # Step 5: Generate the final answer using the (now translated) context
+        # --- Final Answer Generation (This uses the system_prompt parameter) ---
         final_prompt_query = f"Answer in {language_name}:\n{standalone_query}"
         logger.info(f"Step 5: Generating final answer with prompt: '{final_prompt_query}'")
         final_answer = await self.rag_pipeline.generate_answer(
             query=final_prompt_query,
-            context_chunks=context_sources, # Pass the full chunk dictionaries
-            llm_provider=request.llm_provider,
+            context_chunks=context_sources,
+            llm_provider=llm_provider,
             chat_history=chat_history_list,
+            system_prompt=system_prompt # Uses the prompt from the saved chatbot's settings
         )
-
     
-        await question_store.save_query(user_id, request.query, role="user")
+        await question_store.save_query(user_id, query, role="user")
         await question_store.save_query(user_id, final_answer, role="assistant")
 
-        
+        # --- Source Formatting (No changes from your original code) ---
         display_sources = []
-        
-        # Define phrases that indicate the LLM could not find an answer in the context.
         not_found_phrases = [
-            "couldn't find", 
-            "could not find", 
-            "not in the document",
-            "does not provide", 
-            "does not contain", 
-            "no information on", 
-            "unable to find",
-            "i'm sorry, but", 
-            "i cannot answer",
+            "couldn't find", "could not find", "not in the document",
+            "does not provide", "does not contain", "no information on", 
+            "unable to find", "i'm sorry, but", "i cannot answer",
             "without more context" 
         ]
-
         is_not_found = any(phrase in final_answer.lower() for phrase in not_found_phrases)
-
         if context_sources and not is_not_found:
             for source in context_sources:
                 display_sources.append({
@@ -291,8 +284,9 @@ Category:"""
 
         return ChatResponse(
             answer=final_answer,
-            sources=display_sources,
+            sources=[]
         )
+
 
 # Example usage (for testing - requires running within an async context if using await)
 if __name__ == '__main__':

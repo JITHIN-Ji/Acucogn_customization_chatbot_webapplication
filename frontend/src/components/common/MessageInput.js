@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { FiSend } from 'react-icons/fi';
+// import { FiSend } from 'react-icons/fi';
+import { FiSend, FiMic } from 'react-icons/fi';
 
 function MessageInput({ onSendMessage, isSending, token }) {
   const [inputText, setInputText] = useState('');
@@ -31,7 +32,7 @@ function MessageInput({ onSendMessage, isSending, token }) {
         const formData = new FormData();
         formData.append('audio', audioBlob, 'recording.webm');
 
-        fetch('http://localhost:8000/api/v1/upload-audio/', {
+        fetch('https://normal-globally-gannet.ngrok-free.app/api/v1/upload-audio/', {
           method: 'POST',
           body: formData,
         })
@@ -90,14 +91,16 @@ function MessageInput({ onSendMessage, isSending, token }) {
         type="text"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
-        placeholder="Ask a question about the document..."
+        placeholder="Ask Your Questions"
         disabled={isSending}
       />
-      <button type="button" onClick={handleVoiceInput} disabled={isSending || isListening}>
-        🎙️
+       <button type="button" onClick={handleVoiceInput} disabled={isSending || isListening} className="mic-button">
+        <FiMic size={22} />
       </button>
-      <button type="submit" disabled={isSending} title="Send">
-        {isSending ? '...' : <FiSend size={20} />}
+
+      {/* --- 3. THIS IS THE UPDATED SEND BUTTON --- */}
+      <button type="submit" disabled={isSending || inputText.trim() === ''} title="Send" className="send-button">
+        <FiSend size={22} />
       </button>
     </form>
   );

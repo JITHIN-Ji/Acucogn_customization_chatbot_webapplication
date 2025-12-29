@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { uploadDocument } from '../services/apiService';
+import { uploadDocument } from '../../services/apiService';
 
 function FileUpload({ onUploadSuccess, onUploadError, token }) {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -17,7 +17,7 @@ function FileUpload({ onUploadSuccess, onUploadError, token }) {
 
     console.log("Uploading file with token:", token);
   
-  // Check if the token is missing right here
+  
   if (!token) {
       console.error("Upload failed: No token provided!");
       onUploadError("Authentication token is missing. Please log in again.");
@@ -44,11 +44,11 @@ function FileUpload({ onUploadSuccess, onUploadError, token }) {
 
   return (
     <div className="file-upload-container">
-      <h3>Upload Document (PDF or Image)</h3>
+      
       <input
         type="file"
         id="fileInput"
-        accept=".pdf, .png, .jpg, .jpeg, image/png, image/jpeg" // ✅ Allow images and PDFs
+        accept=".pdf, .png, .jpg, .jpeg, image/png, image/jpeg" 
         onChange={handleFileChange}
         disabled={isUploading}
       />

@@ -16,9 +16,10 @@ class Message(BaseModel):
 class ChatRequest(BaseModel):
     query: str
     chat_history: Optional[List[Message]] = None
-    document_ids: Optional[List[str]] = None
+    chatbot_id: int
     llm_provider: Optional[str] = settings.DEFAULT_LLM_PROVIDER
     language: Optional[str] = "auto"
+    
 
 class ChatResponse(BaseModel):
     answer: str
@@ -55,3 +56,37 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[EmailStr] = None
+
+
+class ChatbotCreate(BaseModel):
+    chatbotTitle: str
+    welcomeMessage: str
+    chatbotInstructions: str
+    userIconUrl: Optional[str] = None 
+    avatarUrl: Optional[str] = None
+    bubbleIconUrl: Optional[str] = None
+    
+    documentId: Optional[str] = None # The ID of the trained document
+
+# This defines the data structure for a single saved chatbot
+class Chatbot(BaseModel):
+    id: int # The unique ID from the database
+    chatbot_title: str
+    welcome_message: str
+    system_prompt: str
+    user_icon_url: Optional[str] = None
+    avatar_url: Optional[str] = None
+    bubbleIconUrl: Optional[str] = None
+    owner_id: int
+    document_id: Optional[str] = None
+    
+    
+class ChatbotPublic(BaseModel):
+    chatbot_title: str
+    welcome_message: str
+    avatar_url: Optional[str] = None
+    bubble_icon_url: Optional[str] = None
+    user_icon_url: Optional[str] = None # <-- ADD THIS LINE
+    
+    class Config:
+        from_attributes = True

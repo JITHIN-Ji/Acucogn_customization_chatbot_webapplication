@@ -236,7 +236,8 @@ class RAGPipeline:
         query: str, 
         context_chunks: List[Dict[str, Any]], 
         llm_provider: str, 
-        chat_history: Optional[List[Dict[str, str]]] = None
+        chat_history: Optional[List[Dict[str, str]]] = None,
+        system_prompt: Optional[str] = None # New parameter
     ):
         """Generates an answer using an LLM based on query, context, and chat history."""
         context_str = "\n".join([
@@ -244,28 +245,32 @@ class RAGPipeline:
             for chunk in context_chunks
         ])
 
-        
         if context_str:
             
-            prompt = f"""You are a helpful and thorough AI document assistant. Your goal is to provide comprehensive and easy-to-understand answers based exclusively on the provided document context.
+            persona_injection = ""
+            if system_prompt:
+                persona_injection = f"""
+**Your Persona:**
+You must adopt the following personality and instructions for your response: "{system_prompt}"
+"""
+            
+            prompt = f"""You are a helpful and thorough AI document assistant.{persona_injection}
 
-        **Critical Rules:**
-        1.  **NEVER use outside knowledge.** Your knowledge is strictly limited to the text in the "Provided Document Context".
-        2.  **Provide a Detailed and Comprehensive Answer:** If the context contains the information, synthesize a thorough answer. Explain the key points in detail and structure your response in a clear, logical way. Use bullet points or numbered lists if it helps improve clarity. Do not be overly concise.
-        3.  **If the context does NOT contain the answer...** (This rule remains the same)
+**Critical Rules:**
+1.  **NEVER use outside knowledge.** Your knowledge is strictly limited to the text in the "Provided Document Context".
+2.  **Provide a Detailed and Comprehensive Answer:** If the context contains the information, synthesize a thorough answer. Explain the key points in detail and structure your response in a clear, logical way. Use bullet points or numbered lists if it helps improve clarity. Do not be overly concise.
+3.  **If the context does NOT contain the answer...** (This rule remains the same)
 
-        **Provided Document Context:**
-        ---
-        {context_str}
-        ---
+**Provided Document Context:**
+---
+{context_str}
+---
 
-        **User's Question:** {query}
+**User's Question:** {query}
 
-        **Your Detailed Answer:**
-        """
+**Your Detailed Answer:**
+"""
         else:
-            # This 'else' block handles when no chunks are found at all, which is already
-            # handled by the "hard gate" in agent.py. This remains as a safe fallback.
             prompt = f"""You are 'Cascade', a friendly AI document assistant. A user has asked a question, but no relevant information could be found in their uploaded documents.
 
 **Rules:**
@@ -277,10 +282,9 @@ class RAGPipeline:
 **Your Answer:**
 """
 
-        logger.debug(f"--- Prompt for LLM ({llm_provider}) ---\nHistory: {chat_history}\nContext length: {len(context_str)}\nPrompt: {prompt[:500]}...\n-----------------------")
+        logger.debug(f"--- Prompt for LLM ({llm_provider}) ---\nSystem Prompt: {system_prompt}\nContext length: {len(context_str)}\nPrompt: {prompt[:500]}...\n-----------------------")
 
         llm_response = "No LLM provider was selected or available."
-        
         
         if llm_provider == "gemini":
             if self.gemini_client:
@@ -292,13 +296,5 @@ class RAGPipeline:
                 llm_response = await self.openai_client.generate_text(prompt, history=chat_history)
             else:
                 llm_response = "OpenAI client is not available (e.g., API key missing)."
-        # elif llm_provider == "groq": # Removed groq
-        #     if self.groq_client:
-        #         llm_response = await self.groq_client.generate_text(prompt, history=chat_history)
-        #     else:
-        #         llm_response = "Groq client is not available (e.g., API key missing)."
-        # --- MODIFIED AREA END ---
         
         return llm_response
-
-    

@@ -1,0 +1,439 @@
+/* src/pages/ChatbotBuilder.css */
+.builder-layout {
+  display: flex;
+  height: calc(100vh - 5rem); /* Full height minus parent padding */
+  gap: 2.5rem;
+}
+
+.builder-sidebar {
+  flex: 1;
+  background-color: var(--color-panel-bg);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.builder-preview {
+  flex: 0 0 420px; /* Fixed width for the preview */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Header inside the builder */
+.builder-header {
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.close-customizer-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  margin-bottom: 1rem;
+  font-size: 0.9em;
+  font-weight: 500;
+  padding: 0;
+}
+.builder-header h3 {
+  margin: 0;
+  font-size: 1.1em;
+  color: var(--color-text-dark);
+}
+
+/* Stepper Styles */
+.stepper-container {
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  margin-bottom: 2rem;
+}
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s;
+}
+.step-item:hover {
+  background-color: #f0f4f8;
+}
+.step-counter {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  background-color: var(--color-panel-bg);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8em;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+.step-item.active .step-name {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.step-item.active .step-counter {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+.step-connector {
+  flex-grow: 1;
+  height: 2px;
+  background-color: var(--color-border);
+  margin: 0 0.5rem;
+}
+
+/* Step Content Area */
+.builder-step-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 1.5rem;
+}
+
+/* Navigation Buttons */
+.builder-navigation {
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
+  gap: 0.75rem;
+}
+.nav-btn-primary, .nav-btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.nav-btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+.nav-btn-secondary {
+  background-color: var(--color-panel-bg);
+  color: var(--color-text-body);
+  border-color: var(--color-border);
+}
+
+/* Live Preview */
+.live-chat-preview {
+  width: 100%;
+  height: 745px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.live-chat-preview .chat-window-container {
+    padding: 0;
+}
+.live-chat-preview .message-input-container {
+    display: none;
+}
+
+/* === Shared Form Styles for all steps === */
+.form-step h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  color: var(--color-text-dark);
+}
+.form-step p {
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+  color: var(--color-text-muted);
+}
+.form-group {
+  margin-bottom: 1.5rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--color-text-body);
+}
+.form-group input[type="text"], .form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-group input[type="text"]:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.form-description {
+  font-size: 0.9em;
+  color: var(--color-text-muted);
+  margin: -0.5rem 0 0.75rem 0;
+}
+
+/* Styles for the new CustomizeStep layout */
+.icon-upload-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.icon-preview-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px dashed var(--color-border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.icon-preview-box:hover {
+  border-color: var(--color-primary);
+  background-color: #f0f4f8;
+}
+.avatar-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.icon-upload-text p {
+  margin: 0;
+  font-weight: 500;
+  color: var(--color-text-body);
+}
+.icon-upload-text span {
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+}
+.loader {
+  border: 4px solid var(--color-border);
+  border-top: 4px solid var(--color-primary);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.instruction-box {
+    margin-top: 2rem;
+    padding: 1rem;
+    text-align: center;
+    background-color: var(--color-primary-light);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-md);
+}
+
+.instruction-box p {
+    margin: 0;
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+/* New top-level container for the builder page */
+.builder-page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Take up all available space from the parent */
+  background-color: var(--color-bg);
+}
+
+/* New header styles for the top bar */
+.builder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  background-color: var(--color-panel-bg);
+}
+
+.header-left, .header-right {
+  flex: 1;
+}
+.header-right {
+  text-align: right;
+}
+
+.header-center {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.close-customizer-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-body);
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 500;
+  padding: 0;
+}
+.builder-header h3 {
+  margin: 0;
+  font-size: 0.9em;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* New main content area for the two side-by-side panels */
+.builder-main-content {
+  display: flex;
+  flex-grow: 1;
+  gap: 2.5rem;
+  padding: 2.5rem;
+  overflow: hidden;
+}
+
+/* Updated panel styles with fixed height */
+.builder-form-panel {
+  flex: 1;
+  background-color: var(--color-panel-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-soft);
+}
+
+.builder-preview-panel {
+  flex: 0 0 420px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+}
+
+/* Updated stepper styles */
+.stepper-container {
+  display: flex;
+  align-items: center;
+}
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.step-counter {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+.step-name {
+    font-size: 0.95rem;
+}
+
+/* Active step (purple) styles */
+.step-item.active .step-name {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.step-item.active .step-counter {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+
+/* Completed step (green) styles */
+.step-item.completed .step-name {
+    color: #16a34a; /* Green color */
+    font-weight: 600;
+}
+.step-item.completed .step-counter {
+    border-color: #16a34a;
+    background-color: #dcfce7;
+    color: #16a34a; /* Color of the checkmark */
+}
+.step-item.completed .step-counter svg {
+    font-size: 1.2rem;
+}
+
+.step-connector {
+  flex-grow: 1;
+  height: 2px;
+  background-color: var(--color-border);
+  margin: 0 1rem;
+  transition: background-color 0.4s;
+}
+.step-connector.completed {
+    background-color: #16a34a; /* Green connector line */
+}
+
+/* General content and navigation styles */
+.builder-step-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+.builder-navigation {
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+}
+.nav-btn-primary, .nav-btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.nav-btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+.nav-btn-secondary {
+  background-color: transparent; /* Make the background transparent */
+  color: var(--color-text-body);   /* Use the standard body text color */
+  border: 1px solid var(--color-border); /* Give it a light grey border */
+  transition: all 0.2s ease-in-out; /* Add a smooth transition for hover */
+}
+
+.nav-btn-secondary:hover {
+  background-color: var(--color-primary-light); /* On hover, give it a subtle purple background */
+  color: var(--color-primary); /* Change the text to the main brand color */
+  border-color: var(--color-primary-light); /* Match the border to the new background */
+}
+
+/* Wrapper to make ChatWindow fill the preview panel */
+.builder-preview-panel .chat-window-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}

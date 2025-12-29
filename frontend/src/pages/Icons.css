@@ -1,0 +1,21 @@
+/* This class provides padding and a max-width for the content */
+.icons-page-container {
+  padding: 1rem;
+  max-width: 900px;
+}
+
+/* Style for the main "Icons" heading */
+.page-title {
+  font-size: 1.75rem; /* ~28px */
+  font-weight: 600;
+  color: var(--color-text-dark); /* Use our design system color */
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* Style for the descriptive paragraph below the title */
+.page-description {
+  font-size: 1rem; /* ~16px */
+  color: var(--color-text-body); /* Use our design system color */
+  margin-top: 0;
+}

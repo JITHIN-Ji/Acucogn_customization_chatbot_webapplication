@@ -2,7 +2,6 @@ fastapi
 uvicorn[standard]
 python-dotenv
 PyPDF2
-sentence-transformers
 faiss-cpu
 python-multipart
 google-generativeai
@@ -18,7 +17,6 @@ langdetect
 pycountry
 aiosqlite
 python-jose[cryptography]
-pytesseract
 google-cloud-vision
 azure-cognitiveservices-speech
 authlib

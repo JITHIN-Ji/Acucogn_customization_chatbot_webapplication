@@ -1,0 +1,122 @@
+/* src/pages/Dashboard.css */
+.dashboard-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.dashboard-page .page-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.dashboard-page .header-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.header-button {
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-panel-bg);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: var(--color-text-body);
+  transition: all 0.2s;
+}
+
+.header-button:hover {
+  border-color: #A0AEC0;
+}
+
+.header-button.primary {
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  border-color: var(--color-primary);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: var(--color-panel-bg);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--color-border);
+}
+
+.stat-card span {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin-top: 0.5rem;
+}
+
+.action-card {
+  grid-column: span 2; 
+  background: var(--color-panel-bg);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--color-border);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- ADD THESE NEW STYLES --- */
+.action-card-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.action-card-icon svg {
+  font-size: 2.5rem; /* 40px */
+}
+
+/* Style for the "Create" card icon */
+.icon-create {
+  background: linear-gradient(135deg, #A881FF 0%, #6441E0 100%);
+  color: white;
+}
+
+/* Style for the "Explore" card icon */
+.icon-explore {
+  background-color: #E2E8F0;
+  color: #4A5568;
+}
+
+.action-card h3 {
+  margin: 1rem 0 0.5rem 0;
+  color: var(--color-text-dark);
+}
+
+.action-card p {
+  color: var(--color-text-muted);
+  max-width: 350px;
+  margin-bottom: 1.5rem;
+}
+
+.action-card a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+}

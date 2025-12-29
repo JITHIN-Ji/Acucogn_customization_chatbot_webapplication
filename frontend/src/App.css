@@ -6,29 +6,32 @@
 :root {
   --font-primary: 'Poppins', sans-serif;
 
-  /* Vibrant Light Theme Palette */
-  --bg-main: #f7f7f9;
+  /* NEW: Teal & Slate Color Palette */
+  --bg-main: #f0f4f8; /* Light blue-gray */
   --bg-panel: #ffffff;
-  --bg-bot-message: #eef2f7;
-
-  /* Accent Gradient */
-  --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --accent-solid: #667eea;
+  --bg-bot-message: #e9f5f9; /* Lighter cyan */
+  --accent-primary: #00a896; /* Teal */
+  --accent-secondary: #028090; /* Deeper Teal/Blue */
+  --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
 
   /* Text Colors */
-  --text-dark: #212529;
-  --text-light: #f8f9fa;
-  --text-muted: #6c757d;
+  --text-dark: #2d3748; /* Dark Slate */
+  --text-light: #ffffff;
+  --text-muted: #718096; /* Grayish Slate */
 
   /* Borders & Shadows */
-  --border-color: #e0e0e0;
-  --shadow-color: rgba(102, 126, 234, 0.15); /* Soft shadow from accent color */
+  --border-color: #e2e8f0; /* Lighter Slate */
+  --shadow-color: rgba(0, 168, 150, 0.15); /* Soft shadow from accent color */
   
-  /* System & Error Colors */
+  /* System & Error Colors (remain intuitive) */
   --system-bg: #fffbe6;
   --system-text: #b45309;
   --error-bg: #fef2f2;
   --error-text: #b91c1c;
+  --success-bg: #fff7ed;    /* Very Light Orange/Peach */
+  --success-text: #c2410c;   /* Rich, Dark Orange */
+  --success-border: #ffedd5; /* Soft Orange/Apricot */
+
 
   /* UI Sizing & Speed */
   --radius-md: 12px;
@@ -59,6 +62,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ============================================= */
+/*             MAIN APP LAYOUT & HEADER          */
+/* ============================================= */
 .App {
   display: flex;
   flex-direction: column;
@@ -67,49 +73,47 @@ body {
 
 .App-header {
   background: var(--bg-panel);
-  padding: 1rem 1.5rem;
-  text-align: center;
+  padding: 0.75rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-title-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .App-header h1 {
   margin: 0;
-  font-size: 1.6em;
+  font-size: 1.4em;
   font-weight: 600;
   color: var(--text-dark);
 }
 
-.App-main {
+.header-chip {
+  background-color: var(--bg-bot-message);
+  color: var(--accent-secondary);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.8em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-actions {
   display: flex;
-  flex-grow: 1;
-  padding: 1.5rem;
-  gap: 1.5rem;
-  overflow: hidden;
+  align-items: center;
+  gap: 1rem;
 }
 
-.left-panel, .right-panel {
-  background-color: var(--bg-panel);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 8px 25px var(--shadow-color);
-  border: 1px solid var(--border-color);
-  display: flex;
-  flex-direction: column;
-}
-
-.left-panel {
-  flex: 0 0 320px;
-  padding: 1.5rem;
-  overflow-y: auto;
-}
-
-.right-panel {
-  flex-grow: 1;
-  overflow: hidden;
-}
 
 /* ============================================= */
-/*             FILE UPLOAD & BUTTONS             */
+/*             COMPONENTS & BUTTONS              */
 /* ============================================= */
 .primary-button {
   padding: 0.75rem 1.5rem;
@@ -137,6 +141,47 @@ body {
   box-shadow: none;
 }
 
+.left-panel-customize-btn {
+  padding: 12px 20px;
+  border: 1px solid var(--accent-primary);
+  background-color: transparent;
+  color: var(--accent-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+  margin-top: 1rem;
+  transition: all var(--transition-speed);
+}
+
+.left-panel-customize-btn:hover {
+  background-color: var(--accent-primary);
+  color: var(--text-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.logout-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 9999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+.logout-btn:active {
+  background: #b91c1c;
+}
+
 .file-upload-container {
   display: flex;
   flex-direction: column;
@@ -158,29 +203,34 @@ body {
 }
 
 .file-upload-container input[type="file"]:hover {
-  border-color: var(--accent-solid);
+  border-color: var(--accent-primary);
 }
 
-.file-upload-container button {
-  /* Inherits from .primary-button */
+.error-message {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  padding: 10px 15px;
+  margin-top: 1rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 0.9em;
+  border: 1px solid var(--error-text);
 }
-
 
 /* ============================================= */
 /*             CHAT WINDOW & MESSAGES            */
 /* ============================================= */
 .chat-window-container {
-  flex-grow: 1;
+  flex-grow: 1; /* <-- THIS IS THE MAGIC: It tells this div to take all available vertical space */
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  padding: 1.5rem;
+  overflow: hidden; /* Crucial for controlling the scrollbar */
 }
 
 .message-list {
   flex-grow: 1;
-  overflow-y: auto;
-  padding: 0 1rem;
+  overflow-y: auto; /* <-- THIS IS THE SCROLLBAR */
+  padding: 1.5rem; /* Add padding here for better spacing */
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -204,6 +254,13 @@ body {
   justify-content: center;
   font-weight: 600;
   font-size: 1.1em;
+  overflow: hidden;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .message-bubble {
@@ -216,7 +273,7 @@ body {
 /* User Message Styling */
 .message.user {
   margin-left: auto;
-  flex-direction: row-reverse; /* Avatar on the right */
+  flex-direction: row-reverse;
 }
 
 .message.user .message-avatar {
@@ -227,7 +284,14 @@ body {
 .message.user .message-bubble {
   background: var(--accent-gradient);
   color: var(--text-light);
-  border-bottom-right-radius: 5px; /* Bubble tail */
+  border-bottom-right-radius: 5px;
+}
+.chat-window-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Prevent the whole container from scrolling */
 }
 
 /* Assistant Message Styling */
@@ -235,35 +299,15 @@ body {
   margin-right: auto;
 }
 
-.logout-btn {
-  margin-left: auto;          /* push it to the right */
-  padding: 6px 14px;
-  border: none;
-  border-radius: 9999px;      /* pill shape */
-  background: #ef4444;        /* Tailwind's red‑500 */
-  color: #fff;
-  font-size: 0.875rem;        /* 14 px */
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.logout-btn:hover {
-  background: #dc2626;        /* red‑600 */
-}
-
-.logout-btn:active {
-  background: #b91c1c;        /* red‑700 */
-}
-
 .message.assistant .message-avatar {
   background-color: var(--bg-bot-message);
-  color: var(--accent-solid);
+  color: var(--accent-primary);
 }
 
 .message.assistant .message-bubble {
   background: var(--bg-bot-message);
   color: var(--text-dark);
-  border-bottom-left-radius: 5px; /* Bubble tail */
+  border-bottom-left-radius: 5px;
 }
 
 /* System/Error Message Styling */
@@ -282,9 +326,57 @@ body {
   background: var(--system-bg);
   color: var(--system-text);
 }
-/* You would need to add these classes in your React component */
-/* Example: <div className="message system error"><div className="message-bubble">...</div></div> */
 
+.message.system.success .message-bubble {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-border);
+  font-weight: 500;
+}
+
+
+/* --- NEW: Source link styling inside message bubble --- */
+.message-sources {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 0.85em;
+}
+
+.message-sources strong {
+  color: var(--text-dark);
+}
+
+.message-sources ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.chat-window-container {
+  flex-grow: 1;
+  overflow: hidden; /* This is key to making the inner list scroll */
+}
+
+.message-sources li {
+  background-color: var(--bg-main);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.message-sources a {
+  color: var(--accent-secondary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.message-sources a:hover {
+  text-decoration: underline;
+}
 
 /* ============================================= */
 /*             MESSAGE INPUT AREA                */
@@ -302,7 +394,7 @@ body {
   padding: 14px 22px;
   background-color: var(--bg-main);
   border: 1px solid var(--border-color);
-  border-radius: 9999px; /* Pill shape */
+  border-radius: 9999px;
   font-size: 1em;
   font-family: var(--font-primary);
   color: var(--text-dark);
@@ -311,64 +403,9 @@ body {
 
 .message-input-container input[type="text"]:focus {
   outline: none;
-  border-color: var(--accent-solid);
+  border-color: var(--accent-primary);
   box-shadow: 0 0 0 4px var(--shadow-color);
 }
-
-/* ============================================= */
-/*             UPDATE/ADD THESE STYLES           */
-/* ============================================= */
-
-/* --- MODIFY the existing .App-header --- */
-.App-header {
-  background: var(--bg-panel);
-  padding: 0.75rem 1.5rem; /* Adjusted padding for a sleeker look */
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-  /* The key change: Use Flexbox for layout */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* --- MODIFY the existing .App-header h1 --- */
-.App-header h1 {
-  margin: 0;
-  font-size: 1.4em; /* Slightly adjusted for balance */
-  font-weight: 600;
-  color: var(--text-dark);
-}
-
-/* --- ADD these NEW classes for the title container and chip --- */
-.header-title-container {
-  display: flex;
-  align-items: center;
-  gap: 12px; /* Controls the space between the title and the chip */
-}
-
-.header-chip {
-  background-color: var(--bg-bot-message); /* A subtle background */
-  color: var(--accent-solid); /* Uses the theme's accent color */
-  padding: 4px 10px;
-  border-radius: 9999px; /* This creates the pill shape */
-  font-size: 0.8em;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* --- ADD a style for the error message (already in your JSX) --- */
-.error-message {
-  background-color: var(--error-bg);
-  color: var(--error-text);
-  padding: 10px 15px;
-  margin-top: 1rem;
-  border-radius: var(--radius-md);
-  text-align: center;
-  font-size: 0.9em;
-  border: 1px solid var(--error-text);
-}
-
 
 .message-input-container button {
   flex-shrink: 0;
@@ -380,7 +417,7 @@ body {
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 1.5em; /* Perfect for an icon */
+  font-size: 1.5em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -396,8 +433,6 @@ body {
   cursor: not-allowed;
   transform: none;
 }
-/* For the send button, add an SVG icon inside it in your HTML/JSX */
-/* e.g. <button> <svg>...</svg> </button> */
 
 /* ============================================= */
 /*               CUSTOM SCROLLBAR                */
@@ -415,3 +450,4 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #aaa;
 }
+

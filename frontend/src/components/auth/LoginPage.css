@@ -1,0 +1,222 @@
+.login-page-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--color-bg); /* Use light background from design system */
+}
+
+/* --- Left Promotional Panel --- */
+.login-promo-panel {
+  flex: 0 0 50%; /* Take up 50% of the width */
+  background-color: var(--color-sidebar-bg);
+  color: var(--color-text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+}
+
+.promo-content {
+  max-width: 480px;
+}
+
+.promo-logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 4rem;
+  color: #fff;
+}
+
+.promo-title {
+  font-size: 3rem;
+  line-height: 1.2;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.promo-description {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* --- Right Form Panel --- */
+.login-form-panel {
+  flex: 0 0 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* This aligns content to the top */
+  background-color: var(--color-panel-bg);
+  position: relative;
+  box-shadow: -20px 0px 50px -15px rgba(0, 0, 0, 0.2); 
+  padding: 8rem 2rem 2rem 2rem; /* INCREASE the top padding to push the form down */
+}
+
+/* --- Top Navigation Buttons --- */
+.form-header-nav {
+  display: flex;
+  /* --- THIS IS THE ONLY CHANGE --- */
+  justify-content: flex-end; /* This pushes the buttons to the right */
+  gap: 1.5rem;
+  width: 100%;
+  position: absolute;
+  top: 2rem;
+  padding: 0 2.5rem; /* Add some padding from the edges */
+}
+
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.nav-btn.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* --- Auth Card --- */
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  /* Remove padding from your JS file if it has any, this CSS will handle it */
+}
+
+.auth-card h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 0.5rem 0;
+}
+
+.auth-subtitle {
+  color: var(--color-text-muted);
+  margin-bottom: 2rem;
+}
+
+/* Form Styles */
+.input-group {
+  margin-bottom: 1.25rem;
+}
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--color-text-body);
+}
+.input-group input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  transition: all 0.2s;
+  background-color: var(--color-primary-light);
+  border-color: transparent;
+}
+.input-group input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background-color: #fff;
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.auth-button {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s;
+}
+.auth-button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.divider-alt {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+.divider-alt::before, .divider-alt::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--color-border);
+}
+.divider-alt span {
+  padding: 0 0.5rem;
+}
+
+/* --- Google Button --- */
+.google-auth-button {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  color: var(--color-text-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-soft);
+}
+.google-auth-button:hover {
+  background-color: var(--color-bg);
+}
+.google-auth-button svg {
+  font-size: 1.25rem;
+}
+
+/* --- Toggle View (unused now but kept) --- */
+.toggle-view {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-text-body);
+}
+.toggle-view button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: 600;
+  padding-left: 5px;
+}
+
+/* --- Error Message --- */
+.error-message {
+  color: #c53030;
+  background-color: #fed7d7;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
